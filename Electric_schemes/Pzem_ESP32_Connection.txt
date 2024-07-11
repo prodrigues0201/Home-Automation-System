@@ -1,0 +1,2 @@
+https://github.com/dasetiawan/ESP32-PZEM004T/wiki/ESP32-PZEM004T-Wiki!
+https://fgcoca.github.io/Autocaravana-inteligente/datasheet/uart-a-hardware-communication-protocol.pdf
