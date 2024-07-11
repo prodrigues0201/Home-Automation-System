@@ -12,11 +12,9 @@ int analogVolts;
 DHT11 dht11(DHTPIN);
 PZEM004Tv30 pzem(Serial1, 16, 17); // RX e TX
 
-// Defina suas credenciais WiFi
 const char* ssid = "e=mc2";
 const char* password = "1xperiencia";
 
-// Defina o endereço IP do broker MQTT (Raspberry Pi)
 const char* mqtt_server = "192.168.39.16";
 
 WiFiClient espClient;
@@ -139,14 +137,6 @@ void readPzem() {
   } else {
     Serial.println("Error reading frequency");
   }
-  if (!isnan(pf)) {
-    String pfMsg = "PF: " + String(pf);
-    Serial.println(pfMsg);
-    client.publish("home/pzem/pf", pfMsg.c_str());
-  } else {
-    Serial.println("Error reading power factor");
-  }
-  Serial.println();
 }
 
 /*void relayOn() {
