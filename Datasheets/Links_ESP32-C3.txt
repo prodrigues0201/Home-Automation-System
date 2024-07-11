@@ -1,0 +1,1 @@
+https://forum.arduino.cc/t/esp32-c3-supermini-pinout/1189850

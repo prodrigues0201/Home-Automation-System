@@ -1,0 +1,1 @@
+https://mischianti.org/esp32-s2-pinout-specs-and-arduino-ide-configuration-1/

@@ -1,0 +1,3 @@
+https://www.home-assistant.io/examples/
+https://community.home-assistant.io/tag/lights
+https://opensource.com/article/21/2/home-assistant-custom-sensors
