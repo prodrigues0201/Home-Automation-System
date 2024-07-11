@@ -1,0 +1,5 @@
+ping -4 raspberrypi5.local
+
+ssh pi5@192.168.XX.16
+
+mosquitto_sub -h localhost -t "home/sensor/leituras"

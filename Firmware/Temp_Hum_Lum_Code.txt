@@ -1,0 +1,194 @@
+#include <PZEM004Tv30.h>
+#include <DHT11.h>
+#include <WiFi.h>
+#include <PubSubClient.h>
+
+#define LDRPIN 1
+#define DHTPIN 5
+#define RELAYPIN 21
+
+int ldr;
+int analogVolts;
+DHT11 dht11(DHTPIN);
+PZEM004Tv30 pzem(Serial1, 16, 17); // RX e TX
+
+// Defina suas credenciais WiFi
+const char* ssid = "e=mc2";
+const char* password = "1xperiencia";
+
+// Defina o endereço IP do broker MQTT (Raspberry Pi)
+const char* mqtt_server = "192.168.39.16";
+
+WiFiClient espClient;
+PubSubClient client(espClient);
+
+unsigned long currentMillis, previousMillis = 0;
+const long interval = 2000; // Enviar a cada 10 segundos
+
+void setup_wifi() {
+  delay(10);
+  Serial.println();
+  Serial.print("Conectando-se a ");
+  Serial.println(ssid);
+
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi conectado");
+  Serial.println("Endereço IP: ");
+  Serial.println(WiFi.localIP());
+}
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Mensagem recebida [");
+  Serial.print(topic);
+  Serial.print("] ");
+  for (unsigned int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+}
+
+void reconnect() {
+  while (!client.connected()) {
+    Serial.print("Tentando conexão MQTT...");
+    if (client.connect("ESP32Client")) {
+      Serial.println("conectado");
+    } else {
+      Serial.print("falhou, rc=");
+      Serial.print(client.state());
+      Serial.println(" tentando novamente em 5 segundos");
+      delay(5000);
+    }
+  }
+}
+
+String readDht() {
+  int temperature = 0;
+  int humidity = 0;
+
+  int result = dht11.readTemperatureHumidity(temperature, humidity);
+  if (result == 0) {
+    String tempMsg = "temperatura:" + String(temperature);
+    String humMsg = "humidity:" + String(humidity);
+    Serial.println(tempMsg);
+    Serial.println(humMsg);
+
+    return tempMsg + "\n" + humMsg + "\n";
+  } else {
+    Serial.println(DHT11::getErrorString(result));
+    return "";
+  }
+}
+
+String readLdr() {
+  ldr = analogRead(LDRPIN);
+  analogVolts = analogReadMilliVolts(2);
+  int luz = 100 * (4096 - ldr) / 4096;
+  String luzMsg = "luminosidade:" + String(luz);
+  Serial.println(luzMsg);
+
+  return luzMsg;
+}
+
+void readPzem() {
+  float voltage = pzem.voltage();
+  float current = pzem.current();
+  float power = pzem.power();
+  float energy = pzem.energy();
+  float frequency = pzem.frequency();
+  float pf = pzem.pf();
+
+  if (!isnan(voltage)) {
+    String voltageMsg = "Voltage: " + String(voltage) + " V";
+    Serial.println(voltageMsg);
+    client.publish("home/pzem/voltage", voltageMsg.c_str());
+  } else {
+    Serial.println("Error reading voltage");
+  }
+  if (!isnan(current)) {
+    String currentMsg = "Current: " + String(current) + " A";
+    Serial.println(currentMsg);
+    client.publish("home/pzem/current", currentMsg.c_str());
+  } else {
+    Serial.println("Error reading current");
+  }
+  if (!isnan(power)) {
+    String powerMsg = "Power: " + String(power) + " W";
+    Serial.println(powerMsg);
+    client.publish("home/pzem/power", powerMsg.c_str());
+  } else {
+    Serial.println("Error reading power");
+  }
+  if (!isnan(energy)) {
+    String energyMsg = "Energy: " + String(energy, 3) + " kWh";
+    Serial.println(energyMsg);
+    client.publish("home/pzem/energy", energyMsg.c_str());
+  } else {
+    Serial.println("Error reading energy");
+  }
+  if (!isnan(frequency)) {
+    String frequencyMsg = "Frequency: " + String(frequency, 1) + " Hz";
+    Serial.println(frequencyMsg);
+    client.publish("home/pzem/frequency", frequencyMsg.c_str());
+  } else {
+    Serial.println("Error reading frequency");
+  }
+  if (!isnan(pf)) {
+    String pfMsg = "PF: " + String(pf);
+    Serial.println(pfMsg);
+    client.publish("home/pzem/pf", pfMsg.c_str());
+  } else {
+    Serial.println("Error reading power factor");
+  }
+  Serial.println();
+}
+
+/*void relayOn() {
+  if (Serial.available() > 0) {
+    char c = Serial.read();
+    if (c == 'a') {
+      digitalWrite(RELAYPIN, LOW);
+    } else if (c == 'd') {
+      digitalWrite(RELAYPIN, HIGH);
+    }
+  }
+}*/
+
+void setup() {
+  Serial.begin(115200);
+  analogReadResolution(12);
+  //pinMode(RELAYPIN, OUTPUT);
+  //digitalWrite(RELAYPIN, HIGH);
+
+  setup_wifi();
+  client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
+}
+
+void loop() {
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
+
+  currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+
+    String dhtReadings = readDht();
+    String ldrReading = readLdr();
+
+    if (dhtReadings != "" && ldrReading != "") {
+      String message = dhtReadings + ldrReading;
+      Serial.println("Publicando mensagem: " + message);
+      client.publish("home/sensor/leituras", message.c_str());
+    }
+  }
+  //relayOn();
+}
