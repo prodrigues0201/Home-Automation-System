@@ -94,51 +94,6 @@ String readLdr() {
   return luzMsg;
 }
 
-void readPzem() {
-  float voltage = pzem.voltage();
-  float current = pzem.current();
-  float power = pzem.power();
-  float energy = pzem.energy();
-  float frequency = pzem.frequency();
-  float pf = pzem.pf();
-
-  if (!isnan(voltage)) {
-    String voltageMsg = "Voltage: " + String(voltage) + " V";
-    Serial.println(voltageMsg);
-    client.publish("home/pzem/voltage", voltageMsg.c_str());
-  } else {
-    Serial.println("Error reading voltage");
-  }
-  if (!isnan(current)) {
-    String currentMsg = "Current: " + String(current) + " A";
-    Serial.println(currentMsg);
-    client.publish("home/pzem/current", currentMsg.c_str());
-  } else {
-    Serial.println("Error reading current");
-  }
-  if (!isnan(power)) {
-    String powerMsg = "Power: " + String(power) + " W";
-    Serial.println(powerMsg);
-    client.publish("home/pzem/power", powerMsg.c_str());
-  } else {
-    Serial.println("Error reading power");
-  }
-  if (!isnan(energy)) {
-    String energyMsg = "Energy: " + String(energy, 3) + " kWh";
-    Serial.println(energyMsg);
-    client.publish("home/pzem/energy", energyMsg.c_str());
-  } else {
-    Serial.println("Error reading energy");
-  }
-  if (!isnan(frequency)) {
-    String frequencyMsg = "Frequency: " + String(frequency, 1) + " Hz";
-    Serial.println(frequencyMsg);
-    client.publish("home/pzem/frequency", frequencyMsg.c_str());
-  } else {
-    Serial.println("Error reading frequency");
-  }
-}
-
 /*void relayOn() {
   if (Serial.available() > 0) {
     char c = Serial.read();
