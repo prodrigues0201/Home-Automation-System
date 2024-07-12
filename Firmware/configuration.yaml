@@ -1,0 +1,32 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Example configuration.yaml entry
+mqtt:
+  sensor:
+    - name: "temperatura"
+      state_topic: "home/sensor/dht/temperature"
+    - name: "humidade"
+      state_topic: "home/sensor/dht/humidity"
+    - name: "luminosidade"
+      state_topic: "home/sensor/ldr"
+    - name: "Tensão"
+      state_topic: "home/sensor/pzem/voltage"
+    - name: "Corrente"
+      state_topic: "home/sensor/pzem/current"
+    - name: "Potência"
+      state_topic: "home/sensor/pzem/power"
+    - name: "Energia"
+      state_topic: "home/sensor/pzem/energy"
+    - name: "Frequencia"
+      state_topic: "home/sensor/pzem/frequency"
+      
+      
+  switch:
+    - name: Botão
+      command_topic: "home/relay/command"
+      state_topic: "home/relay/state"
+      payload_on: "ON"
+      payload_off: "OFF"
+      retain: false
+
