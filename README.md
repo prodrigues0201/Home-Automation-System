@@ -3,4 +3,4 @@ This repository contains the relevant files for the Final Project for the Bachel
 
 GitHub and Cloud Links with the Repository for the project could be found in page 38 of the final report.
 
-Home_Automation_System_Final in file firmware represents the final code of the project
+Home_Automation_System_Final in folder firmware represents the final code of the project
