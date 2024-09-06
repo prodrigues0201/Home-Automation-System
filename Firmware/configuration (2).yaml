@@ -1,0 +1,69 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# MQTT configuration
+mqtt:
+  sensor:
+    - name: "Temperature"
+      state_topic: "home/sensor/data"
+      unit_of_measurement: "°C"
+      value_template: "{{ value_json.temperature }}"
+
+    - name: "Humidity"
+      state_topic: "home/sensor/data"
+      unit_of_measurement: "%"
+      value_template: "{{ value_json.humidity }}"
+    
+    - name: "Luminosity"
+      state_topic: "home/sensor/data"
+      unit_of_measurement: "%"
+      value_template: "{{ value_json.luminosity }}"
+      
+    - name: "Lumens"
+      state_topic: "home/sensor/data"
+      unit_of_measurement: "lm"
+      value_template: "{{ value_json.lumens }}"
+    
+    - name: "Voltage"
+      state_topic: "home/sensor/data"
+      unit_of_measurement: "V"
+      value_template: "{{ value_json.voltage }}"
+    
+    - name: "Current"
+      state_topic: "home/sensor/data"
+      unit_of_measurement: "A"
+      value_template: "{{ value_json.current }}"
+    
+    - name: "Power"
+      state_topic: "home/sensor/data"
+      unit_of_measurement: "W"
+      value_template: "{{ value_json.power }}"
+    
+    - name: "Energy"
+      state_topic: "home/sensor/data"
+      unit_of_measurement: "kWh"
+      value_template: "{{ value_json.energy }}"
+    
+    - name: "Frequency"
+      state_topic: "home/sensor/data"
+      unit_of_measurement: "Hz"
+      value_template: "{{ value_json.frequency }}"
+
+    # Shelly 1 with DHT11 sensor integration
+    - name: "Shelly Temperature"
+      state_topic: "shellies/Shelly_1/sensor/temperature"
+      unit_of_measurement: "°C"
+      value_template: "{{ value_json.temperature }}"
+    
+    - name: "Shelly Humidity"
+      state_topic: "shellies/Shelly_1/sensor/humidity"
+      unit_of_measurement: "%"
+      value_template: "{{ value_json.humidity }}"
+
+  switch:
+    - name: Button
+      command_topic: "home/relay/command"
+      state_topic: "home/relay/state"
+      payload_on: "ON"
+      payload_off: "OFF"
+      retain: false
