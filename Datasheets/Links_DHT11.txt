@@ -1,1 +1,3 @@
 https://components101.com/sensors/dht11-temperature-sensor
+
+https://www.elprocus.com/a-brief-on-dht11-sensor/
