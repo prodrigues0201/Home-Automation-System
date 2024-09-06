@@ -4,3 +4,5 @@ This repository contains the relevant files for the Final Project for the Bachel
 GitHub and Cloud Links with the Repository for the project could be found in page 43 of the final report.
 
 DEMO_FINAL_PFC in folder firmware represents the final code of the project
+
+In the folder Documents there is the final report of the project as well as the final poster.
